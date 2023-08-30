@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import StartAgainButton from './component/StartAgainButton';
+import BoardSizeInput from './component/SizeInput';
 import './App.css';
 
+
 const TicTacToe = () => {
-  const [board, setBoard] = useState(Array(9).fill(null));
+  const [boardSize, setBoardSize] = useState(3);
+  const [board, setBoard] = useState(Array(boardSize * boardSize).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
 
   const handleClick = (index) => {
@@ -18,7 +21,13 @@ const TicTacToe = () => {
   };
 
   const handleStartAgain = () => {
-    setBoard(Array(9).fill(null));
+    setBoard(Array(boardSize * boardSize).fill(null));
+    setXIsNext(true);
+  };
+
+  const handleBoardSizeChange = (newSize) => {
+    setBoardSize(newSize);
+    setBoard(Array(newSize * newSize).fill(null));
     setXIsNext(true);
   };
 
@@ -46,22 +55,15 @@ const TicTacToe = () => {
 
   return (
     <div className="game">
+      <BoardSizeInput onSizeChange={handleBoardSizeChange} />
       <div className="game-board">
-        <div className="board-row">
-          {renderSquare(0)}
-          {renderSquare(1)}
-          {renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {renderSquare(3)}
-          {renderSquare(4)}
-          {renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {renderSquare(6)}
-          {renderSquare(7)}
-          {renderSquare(8)}
-        </div>
+        {Array.from({ length: boardSize }).map((_, rowIndex) => (
+          <div key={rowIndex} className="board-row">
+            {Array.from({ length: boardSize }).map((_, colIndex) => (
+              renderSquare(rowIndex * boardSize + colIndex)
+            ))}
+          </div>
+        ))}
       </div>
       <div className="game-info">
         <div>{status}</div>
